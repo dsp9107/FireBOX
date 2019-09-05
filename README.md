@@ -1,4 +1,4 @@
-## These Were Done Swiftly In No Time Using :computer: , :muscle: And :heart:
+## These Were Done Swiftly ~~In No Time~~ Using :computer: , :muscle: And :heart:
 
 - [Implemented Zero Knowledge In Python](/ZK_Implementation.py)
 - [Get Regional Topics And Links From Google Trends](/TrendGetter.py)
