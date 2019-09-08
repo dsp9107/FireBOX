@@ -53,26 +53,18 @@ When a command is run with sudo as the prefix, then it’ll execute it with supe
 - Replace All With `pi ALL=(ALL) PASSWD: ALL`
 - Save The File And Reboot Your Pi
 
-### No Services Are Running as `root`
-
-### Disable SSH Login as `root`
-
-### Setting Up A Firewall
-
-### Fail2Ban
-
 ### Improving SSH Security
 
 SSH is one of the most common techniques to access Raspberry Pi over the network and it becomes necessary to use if you want to make it secure.
 
-#### Username And Password Security
+#### Disable SSH Login as `root`
 
 Apart from having a strong password, we can allow and deny access to specific users. This can be done by making the following changes.
 
 - Open Up A Terminal
 - Type `sudo nano /etc/ssh/sshd_config` And Press Enter
-- At The End of The File, Add `AllowUsers brucewayne` To Allow Access Via SSH
-- Add Another Line `DenyUsers newguy` To Deny Access Via SSH
+- At The End of The File, Add `AllowUsers newguy` To Allow Access To Non-Root User Via SSH
+- Add Another Line `DenyUsers brucewayne` To Deny Access To Root User Via SSH
 - Save The File And Reboot Your Pi
 
 #### Key-Based Authentication
