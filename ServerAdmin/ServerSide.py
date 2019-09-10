@@ -1,4 +1,4 @@
-# To Be Run Before ServerClient.py
+# To Be Run Before ServerSide.py
 
 from jsonsocket import Server
 
