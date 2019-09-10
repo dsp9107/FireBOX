@@ -2,6 +2,7 @@
 # Can Be Found At https://github.com/mdebbar/jsonsocket
 # Originally Compatible With Py 2.x
 # Tweaked A Bit To Work With Py 3.x
+# Works Fine Now
 
 import json, socket
 
