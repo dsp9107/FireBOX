@@ -4,7 +4,9 @@ import pickle
 
 HEADERSIZE = 10
 ENCODING = "utf-8"
-reqhn = {'request': [{'hostname': 1}]}
+reqexit = {'terminate': 1}
+reqhn = {'hostname': 1}
+reqpubkey = {'pubKey': 1}
 
 def pack(msg):
     payload = pickle.dumps(msg)
@@ -24,22 +26,25 @@ s.connect((host, 1237))
 
 print(f"\nConnection With {host} Has Been Established")
 
+message = unpack(s.recv(1024))
+print("SERVER ~ " + message)
 while True:
-    msg = s.recv(1024)
-    if msg:
-        message = unpack(msg)
-    print("SERVER ~ " + message)
-    while True:
-        mess = str(input("SERVER : "))
-        if mess == "<reqhn>" :
-            mess = str(reqhn)
-            s.send(pack(mess))
-            hn = s.recv(1024)
-            print("SERVER ~ " + unpack(hn))
-        elif mess == "<exit>" :
-            s.send(pack(mess))
-            exit()
-        else :
-            s.send(pack(mess))
+    mess = str(input("SERVER : "))
+    if mess == "<reqhn>" :
+        mess = str(reqhn)
+        s.send(pack(mess))
+        hn = s.recv(1024)
+        print("SERVER ~ " + unpack(hn))
+    elif mess == "<reqpubkey>" :
+        mess = str(reqpubkey)
+        s.send(pack(mess))
+        hn = s.recv(1024)
+        print("SERVER ~ " + unpack(hn))
+    elif mess == "<reqexit>" :
+        mess = str(reqexit)
+        s.send(pack(mess))
+        break
+    else :
+        s.send(pack(mess))
             
-print("Connection Terminated")
+print(f"Connection With {host} Has Been Terminated")
