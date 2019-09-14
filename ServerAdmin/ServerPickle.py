@@ -1,47 +1,45 @@
+import json
 import socket
-import time
-import pickle
+import jsontransport as jt
 
-HEADERSIZE = 10
-ENCODING = "utf-8"
-reqexit = {'terminate': 1}
-reqhn = {'hostname': 1}
-reqpubkey = {'pubKey': 1}
-pubKey = "pK-ub-E-li-Yc"
+def main():
+    global config, pubKey, s
+    with open("config.json", "r") as read_file:
+        config = json.load(read_file)
 
-def pack(msg):
-    payload = pickle.dumps(msg)
-    payload = bytes(str(len(msg)).ljust(HEADERSIZE), ENCODING) + payload
-    return payload
+    pubKey = "pK-ub-E-li-Yc"
 
-def unpack(message):
-    msglen = int(message[:HEADERSIZE].decode())
-    full_msg = message[HEADERSIZE:]
-    if(len(full_msg)-HEADERSIZE == msglen):
-        msg = pickle.loads(full_msg)
-    return msg
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+if __name__ == '__main__' :
+    main()
+
 s.bind(('localhost', 1237))
 s.listen(5)
 
 while True:
     ClientSocket, Address = s.accept()
     print(f"\nConnection From {Address} Has Been Established")
-    ClientSocket.send(pack("Welcome, Client"))
+    ClientSocket.send(jt.pack(jt.prep("Welcome, Client"), config['HEADERSIZE']))
 
     while True:
-        message = unpack(ClientSocket.recv(1024))
-        if message == str(reqexit) :
-            print("CLIENT : <exiting>")
-            break
-        elif message == str(reqhn) :
-            print("CLIENT : <requesting hostname>")
-            ClientSocket.send(pack(socket.gethostname()))
-        elif message == str(reqpubkey) :
-            print("CLIENT : <requesting publicKey>")
-            ClientSocket.send(pack(pubKey))
-        else :
-            d = "CLIENT : " + message
-            print(d)
+        message = jt.unpack(ClientSocket.recv(1024), config['HEADERSIZE'])
+        
+        if message['messageType'] == "request" :
+            
+            if message['messageContent']['terminate'] :
+                print("CLIENT : <exiting>")
+                break
+            
+            elif message['messageContent']['hostname'] :
+                print("CLIENT : <requesting hostname>")
+                ClientSocket.send(jt.pack(jt.prep(socket.gethostname()), config['HEADERSIZE']))
+
+            elif message['messageContent']['pubKey'] :
+                print("CLIENT : <requesting publicKey>")    
+                ClientSocket.send(jt.pack(jt.prep(pubKey), config['HEADERSIZE']))
+
+        elif message['messageType'] == "message" :
+            print("CLIENT : " + message['messageContent'])
+            
     print(f"Connection From {Address} Has Been Lost")
