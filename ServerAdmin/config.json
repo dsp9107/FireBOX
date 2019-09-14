@@ -1,0 +1,10 @@
+{
+    "HEADERSIZE" : 10,
+    "ENCODING" : "utf-8",
+    "reqtype" :
+    {
+        "terminate": 0,
+        "hostname": 0,
+        "pubKey": 0
+    }
+}
