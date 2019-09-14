@@ -5,4 +5,4 @@
 - [Setting Up A Wireless Access Point on Raspberry Pi](/WirelessAccessPoint.md)
 - [Sharing An Internet Connection Via Raspberry Pi](/ConfiguringBridgeConnection.md)
 - [Hardening A Raspberry Pi](/PiHardening.md)
-- [Server-Client Authentication \[PoC\]](/ServerAdmin)
+- [Server-Client Communication \[PoC\]](/ServerAdmin)
