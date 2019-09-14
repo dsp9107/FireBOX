@@ -3,40 +3,40 @@ import time
 import pickle
 
 HEADERSIZE = 10
+ENCODING = "utf-8"
 
-def prep(msg):
+def pack(msg):
     payload = pickle.dumps(msg)
-    payload = bytes(str(len(msg)).ljust(HEADERSIZE),"utf-8") + payload
+    payload = bytes(str(len(msg)).ljust(HEADERSIZE), ENCODING) + payload
     return payload
 
-msg = "Welcome , Client"
+def unpack(message):
+    msglen = int(message[:HEADERSIZE].decode())
+    full_msg = message[HEADERSIZE:]
+    if(len(full_msg)-HEADERSIZE == msglen):
+        msg = pickle.loads(full_msg)
+    return msg
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(('0.0.0.0', 1237))
+s.bind(('localhost', 1237))
 s.listen(5)
 
 while True:
     ClientSocket, Address = s.accept()
-    print(f"Connection from {Address} has been established")
-#    msg = pickle.dumps(d)
-
-    ClientSocket.send(prep(msg))
+    print(f"\nConnection From {Address} Has Been Established")
+    ClientSocket.send(pack("Welcome, Client"))
 
     while True:
-        full_msg = b''
-        new_msg = True
         msg = ClientSocket.recv(1024)
-        if new_msg:
-#            print("RECEIVED")
-#            print(f"Message Length : {msg[:HEADERSIZE]}")
-            msglen = int(msg[:HEADERSIZE].decode())
-            new_msg = False
-        full_msg += msg[HEADERSIZE:]
-        if(len(full_msg)-HEADERSIZE == msglen):
-#            print("Full Message Received")
-#            print(full_msg)
-
-            d = "CLIENT : " + pickle.loads(full_msg)
+        if msg:
+            message = unpack(msg)
+        if message == "<exit>" :
+            print("CLIENT : <exiting>")
+            break
+        elif message == "{'request': [{'hostname': 1}]}" :
+            print("CLIENT : <requesting hostname>")
+            ClientSocket.send(pack(socket.gethostname()))
+        else :
+            d = "CLIENT : " + message
             print(d)
-
-            new_msg = True
-            full_msg = b''
+    print(f"Connection From {Address} Has Been Lost")
