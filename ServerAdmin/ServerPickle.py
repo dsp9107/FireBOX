@@ -4,6 +4,10 @@ import pickle
 
 HEADERSIZE = 10
 ENCODING = "utf-8"
+reqexit = {'terminate': 1}
+reqhn = {'hostname': 1}
+reqpubkey = {'pubKey': 1}
+pubKey = "pK-ub-E-li-Yc"
 
 def pack(msg):
     payload = pickle.dumps(msg)
@@ -27,15 +31,16 @@ while True:
     ClientSocket.send(pack("Welcome, Client"))
 
     while True:
-        msg = ClientSocket.recv(1024)
-        if msg:
-            message = unpack(msg)
-        if message == "<exit>" :
+        message = unpack(ClientSocket.recv(1024))
+        if message == str(reqexit) :
             print("CLIENT : <exiting>")
             break
-        elif message == "{'request': [{'hostname': 1}]}" :
+        elif message == str(reqhn) :
             print("CLIENT : <requesting hostname>")
             ClientSocket.send(pack(socket.gethostname()))
+        elif message == str(reqpubkey) :
+            print("CLIENT : <requesting publicKey>")
+            ClientSocket.send(pack(pubKey))
         else :
             d = "CLIENT : " + message
             print(d)
