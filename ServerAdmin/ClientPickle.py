@@ -9,7 +9,7 @@ def main():
         config = json.load(read_file)
 
     config['reqtype'] = {i : 0 for i in config['reqtype']}
-    host = 'localhost'
+    host = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 if __name__ == '__main__' :
@@ -18,7 +18,7 @@ if __name__ == '__main__' :
 s.connect((host, 1237))
 print(f"\nConnection With {host} Has Been Established")
 
-message = jt.unpack(s.recv(1024), config['HEADERSIZE'])['messageContent']
+message = jt.unpack(s.recv(1024), config['headerSize'])['messageContent']
 print("SERVER ~ " + message)
 
 while True:
@@ -27,25 +27,25 @@ while True:
     if mess == "<reqhn>" :
         mess = config['reqtype']
         mess['hostname']=1
-        s.send(jt.pack(jt.prep(mess, "request"), config['HEADERSIZE']))
+        s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
         hn = s.recv(1024)
-        print("SERVER ~ " + jt.unpack(hn, config['HEADERSIZE'])['messageContent'])
+        print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
 
     elif mess == "<reqpk>" :
         mess = config['reqtype']
         mess['pubKey']=1
-        s.send(jt.pack(jt.prep(mess, "request"), config['HEADERSIZE']))
+        s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
         hn = s.recv(1024)
-        print("SERVER ~ " + jt.unpack(hn, config['HEADERSIZE'])['messageContent'])
+        print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
 
     elif mess == "<exit>" :
         mess = config['reqtype']
         mess['terminate']=1
-        s.send(jt.pack(jt.prep(mess, "request"), config['HEADERSIZE']))
+        s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
         break
 
     else :
-        s.send(jt.pack(jt.prep(mess), config['HEADERSIZE']))
+        s.send(jt.pack(jt.prep(mess), config['headerSize']))
 
     config['reqtype'] = {i : 0 for i in config['reqtype']}
         
