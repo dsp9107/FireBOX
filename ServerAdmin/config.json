@@ -1,10 +1,12 @@
 {
-    "HEADERSIZE" : 10,
-    "ENCODING" : "utf-8",
+    "headerSize" : 10,
+    "encoding" : "utf-8",
     "reqtype" :
     {
         "terminate": 0,
         "hostname": 0,
         "pubKey": 0
-    }
+    },
+    "maxClients" : 3,
+    "port" : 9107
 }
