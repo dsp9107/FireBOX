@@ -95,3 +95,43 @@ Finally, we need to disable the password logins to avoid unauthorized access by 
 - `sudo nano etc/ssh/sshd_config`
 - Look For `#PasswordAuthentication yes` And Replace With `PasswordAuthentication no`
 - Restart Your Pi For The Changes To Take Effect
+
+### Disabling Bluetooth
+
+lqkjngjk
+
+#### Disabling on-board Bluetooth
+
+The steps below shows how to disable on-board Bluetooth and related services. Those steps also disable loading the related kernel modules such as bluetooth, hci_uart, btbcm, etc at boot.
+
+- Open /boot/config.txt file.
+```
+sudo nano /boot/config.txt
+```
+- Add below, save and close the file.
+```
+# Disable Bluetooth
+dtoverlay=pi3-disable-bt
+```
+- Disable related services.
+```
+sudo systemctl disable hciuart.service
+sudo systemctl disable bluealsa.service
+sudo systemctl disable bluetooth.service
+```
+- Reboot to apply the changes
+```
+sudo reboot
+```
+Even after disabling on-board Bluetooth and related services, Bluetooth will be available when a Bluetooth adapter (e.g. Plugable Bluetooth Adapter) is plugged in.
+
+#### Disable Bluetooth completely
+
+If Bluetooth is not required at all, uninstall Bluetooth stack. It makes Bluetooth unavailable even if external Bluetooth adapter is plugged in.
+
+- Uninstall BlueZ and related packages.
+```
+sudo apt-get purge bluez -y
+sudo apt-get autoremove -y
+```
+Uninstalling Bluetooth stack also disabling related services, and loading related kernel modules.
