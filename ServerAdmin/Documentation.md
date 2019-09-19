@@ -10,6 +10,22 @@ Request = {
 }
 ```
 
+- `<startrandom>` - start generating fake traffic
+```
+Request = {
+  "uname": "USERNAME",
+  "fakeTraffic": 1
+}
+```
+
+- `<stoprandom>` - stop generating fake traffic
+```
+Request = {
+  "uname": "USERNAME",
+  "fakeTraffic": 0
+}
+```
+
 - `<reqhn>` - requests hostname
 ```
 Request = {
