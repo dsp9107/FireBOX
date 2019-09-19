@@ -14,7 +14,7 @@ Request = {
 ```
 Request = {
   "uname": "USERNAME",
-  "fakeTraffic": 1
+  "fakeTraffic": 'Y'
 }
 ```
 
@@ -22,7 +22,7 @@ Request = {
 ```
 Request = {
   "uname": "USERNAME",
-  "fakeTraffic": 0
+  "fakeTraffic": 'N'
 }
 ```
 
