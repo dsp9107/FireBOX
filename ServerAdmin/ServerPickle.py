@@ -1,5 +1,3 @@
-# DISCONTINUED
-
 import json
 import socket
 import jsontransport as jt
