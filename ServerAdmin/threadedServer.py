@@ -5,6 +5,7 @@ import socket
 import threading
 import jsontransport as jt
 from datetime import datetime
+# import faketrafficgenerator as ftg
 
 def main():                                                     # INITIALIZATION
     global config, pubKey, s, i, clients, connections
@@ -14,7 +15,7 @@ def main():                                                     # INITIALIZATION
     pubKey = "pK-ub-E-li-Yc"
     clients = []
     connections = []
-    i = threading.activeCount()
+    i = threading.activeCount() - 2
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     s.bind((socket.gethostname(), config['port']))
@@ -58,6 +59,7 @@ def serve(ClientSocket, Address):                               # SERVICE
     logUpdate(msg=f"Client Connected From {Address} As {clientName}")
     print(f"{Address} Has Joined As {clientName}")
     ClientSocket.send(jt.pack(jt.prep("Welcome, Client"), config['headerSize']))
+    global i
 
     while True:
         message = jt.unpack(ClientSocket.recv(1024), config['headerSize'])
@@ -67,6 +69,7 @@ def serve(ClientSocket, Address):                               # SERVICE
             if message['messageContent']['terminate'] :
                 print(f"{clientName} : <exiting>")
                 revokeID(int(clientName[1:]))
+                i -= 1
                 break
             
             elif message['messageContent']['hostname'] :
@@ -77,19 +80,40 @@ def serve(ClientSocket, Address):                               # SERVICE
                 print(f"{clientName} : <requesting publicKey>")    
                 ClientSocket.send(jt.pack(jt.prep(pubKey), config['headerSize']))
 
+            elif message['messageContent']['fakeTraffic']:
+                if message['messageContent']['fakeTraffic'] == 'Y' :
+                    print(f"{clientName} : <start generating fake traffic>")
+                    ClientSocket.send(jt.pack(jt.prep("Started Generating Traffic on Your Behalf"), config['headerSize']))
+                elif message['messageContent']['fakeTraffic'] == 'N' :
+                    print(f"{clientName} : <stop generating fake traffic>")
+                    ClientSocket.send(jt.pack(jt.prep("Stopped Generating Fake Traffic on Your Behalf"), config['headerSize']))
+
         elif message['messageType'] == "message" :
             print(f"{clientName} : {message['messageContent']}")
     logUpdate(msg=f"{clientName} Disconnected From {Address}")
     print(f"{clientName} Has Left")
 
+def shutall():
+    global clients
+    for c in clients:
+        c.join()
+
 if __name__ == '__main__' :
     main()
-    while i<(threading.activeCount()+config['maxClients']):
+    while i<config['maxClients'] :
+        print("i : " + str(i))
+        print("Threads : " + str(threading.activeCount()))
+        if i :
+            s.settimeout(10)
+        else :
+            s.settimeout(5)
         try :
             clientSocket, Address = s.accept()
         except socket.timeout :
             logUpdate(msg=f"SERVER CLOSED DUE TO INACTIVITY\n")
             print("SERVER CLOSED DUE TO INACTIVITY")
+            for c in clients:
+                c.join()
             s.close()
             sys.exit()
         else :
@@ -102,7 +126,6 @@ if __name__ == '__main__' :
             clients.append(client)
             i += 1
     for c in clients:
-        print(c)
         c.join()
     logUpdate(msg=f"SERVER CLOSED\n")
     s.close()

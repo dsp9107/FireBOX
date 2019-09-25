@@ -45,6 +45,20 @@ else :
             hn = s.recv(1024)
             print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
 
+        elif mess == "<startrandom>" :
+            mess = config['reqtype']
+            mess['fakeTraffic']='Y'
+            s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
+            hn = s.recv(1024)
+            print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
+
+        elif mess == "<stoprandom>" :
+            mess = config['reqtype']
+            mess['fakeTraffic']='N'
+            s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
+            hn = s.recv(1024)
+            print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
+            
         elif mess == "<exit>" :
             mess = config['reqtype']
             mess['terminate']=1

@@ -5,7 +5,8 @@
     {
         "terminate": 0,
         "hostname": 0,
-        "pubKey": 0
+        "pubKey": 0,
+        "fakeTraffic" : ""
     },
     "maxClients" : 3,
     "port" : 9107
