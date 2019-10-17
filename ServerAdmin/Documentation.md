@@ -39,7 +39,7 @@ Response = {
 }
 ```
 
-- `<reqpubkey>` - requests public key
+- `<reqpk>` - requests public key
 ```
 Request = {
   "uname": "USERNAME",
