@@ -144,8 +144,7 @@ Uninstalling Bluetooth stack also disabling related services, and loading relate
 ```
 sudo reboot
 ```
-#### Test Changes
-
+- Test Changes
 ```
 speaker-test -c2 -twav -l7
 ```
