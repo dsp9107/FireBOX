@@ -135,3 +135,12 @@ sudo apt-get purge bluez -y
 sudo apt-get autoremove -y
 ```
 Uninstalling Bluetooth stack also disabling related services, and loading related kernel modules.
+
+### Disabling Onboard Audio Jack
+
+- Open `/etc/modprobe.d/raspi-blacklist.conf`
+- Append `blacklist snd_bcm2835`
+- Reboot to apply the changes
+```
+sudo reboot
+```
