@@ -6,7 +6,20 @@
         "terminate": 0,
         "hostname": 0,
         "pubKey": 0,
-        "fakeTraffic" : ""
+        "fakeTraffic": ""
+    },
+    "sensitive" :
+    {
+        "registration": {
+            "name": "",
+            "uname": "",
+            "pwd": "",
+            "pubkey": ""
+        },
+        "login": {
+            "uname": "",
+            "pwd": ""
+        }
     },
     "maxClients" : 3,
     "port" : 9107
