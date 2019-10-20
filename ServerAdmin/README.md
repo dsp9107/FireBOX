@@ -1,4 +1,4 @@
-# How To Send Message To Server
+# How To Communicate With Server
 
 First, Prepare The Message `text` By Calling `prep(text)` -
 ```
