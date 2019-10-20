@@ -10,35 +10,6 @@ Request = {
 }
 ```
 
-- `<startrandom>` - start generating fake traffic
-```
-Request = {
-  "uname": "USERNAME",
-  "fakeTraffic": 'Y'
-}
-```
-
-- `<stoprandom>` - stop generating fake traffic
-```
-Request = {
-  "uname": "USERNAME",
-  "fakeTraffic": 'N'
-}
-```
-
-- `<reqhn>` - requests hostname
-```
-Request = {
-  "uname": " USERNAME",
-  "hostname": 1
-}
-```
-```
-Response = {
-  "hostname": "HOSTNAME"
-}
-```
-
 - `<reqpk>` - requests public key
 ```
 Request = {
