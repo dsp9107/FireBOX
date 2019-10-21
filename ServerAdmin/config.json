@@ -10,13 +10,8 @@
     },
     "sensitive" :
     {
-        "register": {
-            "name": "",
-            "uname": "",
-            "pwd": "",
-            "pubkey": ""
-        },
-        "login": {
+        "pubkey": "",
+        "credentials": {
             "uname": "",
             "pwd": ""
         }

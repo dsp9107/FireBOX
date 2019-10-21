@@ -27,23 +27,51 @@ except ConnectionRefusedError :
     print("Server's Offline")
 
 else :
-    # Authentication
-    uname = str(input("Username: "))
-    secret = getpass.getpass()
-    password = hashlib.sha3_512(bytes(str(secret), "utf-8")).hexdigest()
+    while True:
+        op = str(input("[l]ogin or [r]egister ? "))
 
-    # Build Message
-    mess = config['sensitive']['login']
-    mess['uname'] = uname
-    mess['pwd'] = password
-    s.send(jt.pack(jt.prep(mess, "sensitive"), config['headerSize']))
-    hn = s.recv(1024)
-    if jt.unpack(hn, config['headerSize'])['messageContent'] == "Invalid User Details" :
-        print("INVALID USER DETAILS")
-        sys.exit()
-    else :
-        print(f"\nConnection With {host} Has Been Established")
-        print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
+        # Authentication
+        if op == 'l':
+            uname = str(input("Username: "))
+            secret = getpass.getpass()
+            password = hashlib.sha3_512(bytes(str(secret), "utf-8")).hexdigest()
+
+            # Build Message
+            mess = config['sensitive']['credentials']
+            mess['uname'] = uname
+            mess['pwd'] = password
+            s.send(jt.pack(jt.prep(mess, "login"), config['headerSize']))
+            hn = s.recv(1024)
+
+            # Decision Making
+            if jt.unpack(hn, config['headerSize'])['messageContent'] == "Invalid User Details" :
+                print("INVALID USER DETAILS")
+                continue
+            else :
+                print(f"\nConnection With {host} Has Been Established")
+                print("SERVER ~ " + jt.unpack(hn, config['headerSize'])['messageContent'])
+                break
+
+        # Registration
+        elif op == 'r':
+            uname = str(input("Username: "))
+            secret = getpass.getpass()
+            password = hashlib.sha3_512(bytes(str(secret), "utf-8")).hexdigest()
+
+            # Build Message
+            mess = config['sensitive']['credentials']
+            mess['uname'] = uname
+            mess['pwd'] = password
+            s.send(jt.pack(jt.prep(mess, "register"), config['headerSize']))
+            hn = s.recv(1024)
+
+            # Decision Making
+            if jt.unpack(hn, config['headerSize'])['messageContent'] == "Registration Successful" :
+                print("Registered Successfully")
+                print("Application Will Now Exit")
+            else :
+                print("Could Not Register")
+            sys.exit()
 
     while True:
         mess = str(input("SERVER : "))
@@ -54,16 +82,6 @@ else :
             mess['terminate'] = 1
             s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
             break
-
-        # Request Server's Public Key
-        elif mess == "<reqpk>" :
-            mess = config['reqtype']
-            mess['pubKey'] = 1
-            s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
-            # Wait For Server To Respond
-            hn = s.recv(1024)
-            s_pubkey = jt.unpack(hn, config['headerSize'])['messageContent']
-            print("SERVER ~ " + s_pubkey)
 
         # Else, Send Message To Server
         else :
