@@ -1,5 +1,7 @@
 # How To Communicate With Server
 
+### Usage
+
 First, Prepare The Message `text` By Calling `prep(text)` -
 ```
 prep(string text, string typ="message"):
@@ -27,21 +29,114 @@ unpack(payload, integer HEADERSIZE, string ENCODING = 'utf-8'):
     return msg
 ```
 
-### :star: Example :star:
+#### To Send Message
 
-To Send
+Client
 ```
 text = "HELLO"
-package = jt.prep(text)
+package = jt.prep(text, "message")
 payload = jt.pack(package, config['headerSize'])
 ServerSocket.send(payload)
 ```
-To Receive
+
+Server
 ```
 payload = ClientSocket.recv(1024)
 message = jt.unpack(payload, config['headerSize'])
 ```
-To Open
 
-- `message['messageType']` : Type of Message
+Elements
+
+- `message['messageType']` : Message
 - `message['messageContent']` : Content of Message
+
+#### To Send Request - Disconnect 
+
+Client
+```
+request = {
+  "terminate": 1
+}
+package = jt.prep(request, "request")
+payload = jt.pack(package, config['headerSize'])
+ServerSocket.send(payload)
+```
+
+Server
+```
+payload = ClientSocket.recv(1024)
+message = jt.unpack(payload, config['headerSize'])
+if message['messageContent']['terminate'] :
+    # Disconnect User
+```
+
+Elements
+
+- `message['messageType']` : Request
+- `message['messageContent']` : Content of Request
+- `message['messageContent']['terminate']` : Termination Status
+
+#### To Send Request - Login 
+
+Client
+```
+request = {
+  "login": {
+        "uname": "user123",
+        "pwd": hash("pass123")
+    }
+}
+package = jt.prep(request, "login")
+payload = jt.pack(package, config['headerSize'])
+ServerSocket.send(payload)
+```
+
+Server
+```
+payload = ClientSocket.recv(1024)
+message = jt.unpack(payload, config['headerSize'])
+if message['messageType'] == "login" :
+    # Check If User Exists
+    # Authenticate
+```
+
+Elements
+
+- `message['messageType']` : Login Request
+- `message['messageContent']` : Content of Request
+- `message['messageContent']['uname']` : Username
+- `message['messageContent']['pwd']` : Password
+
+#### To Send Request - Register 
+
+Client
+```
+request = {
+    "register": {
+        "uname": "user123",
+        "pwd": hash("pass123")
+    }
+}
+package = jt.prep(request, "register")
+payload = jt.pack(package, config['headerSize'])
+ServerSocket.send(payload)
+```
+
+Server
+```
+payload = ClientSocket.recv(1024)
+message = jt.unpack(payload, config['headerSize'])
+if message['messageType'] == "register" :
+    user = {"uname": "", "pwd": ""}
+    user['uname'] = message['messageContent']['uname']
+    user['pwd'] = hash(message['messageContent']['pwd'])
+    # Update Database
+    # Authorise
+```
+
+Elements
+
+- `message['messageType']` : Registration Request
+- `message['messageContent']` : Content of Request
+- `message['messageContent']['uname']` : Username
+- `message['messageContent']['pwd']` : Password
