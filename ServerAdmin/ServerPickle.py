@@ -47,11 +47,13 @@ while True:
     else :
         # When Connected
         message = jt.unpack(ClientSocket.recv(1024), config['headerSize'])
-        # If Message Is Sensitive
-        if message['messageType'] == "sensitive" :
+
+        # If Message Is Login Request
+        if message['messageType'] == "login" :
             user = {"uname": "", "pwd": ""}
             user['uname'] = message['messageContent']['uname']
             user['pwd'] = th.threeHash(message['messageContent']['pwd'])
+            # Load DB
             with open("users.json", "r") as read_file :
                 users = json.load(read_file)
             # If User Registered
@@ -68,6 +70,27 @@ while True:
             else :
                 ClientSocket.send(jt.pack(jt.prep("Invalid User Details"), config['headerSize']))
                 continue
+
+        # If Message Is Registration Request
+        elif message['messageType'] == "register" :
+            user = {"uname": "", "pwd": ""}
+            user['uname'] = message['messageContent']['uname']
+            user['pwd'] = th.threeHash(message['messageContent']['pwd'])
+            # Load DB
+            with open("users.json", "r") as read_file :
+                users = json.load(read_file)
+            users[user['uname']] = user['pwd']
+            # Update DB
+            with open("users.json", "w") as write_file :
+                json.dump(users, write_file)
+            # Acknowledge
+            ClientSocket.send(jt.pack(jt.prep(f"Registration Successful"), config['headerSize']))
+            logUpdate(msg=f"{user['uname']} Has Been Registered")
+            print(f"{user['uname']} Has Registered")
+            s.close()
+            continue
+
+        # If First Message Is Anything Else, Drop Connection
         else :
             s.close()
             continue

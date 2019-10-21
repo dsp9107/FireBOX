@@ -10,7 +10,7 @@
     },
     "sensitive" :
     {
-        "registration": {
+        "register": {
             "name": "",
             "uname": "",
             "pwd": "",
