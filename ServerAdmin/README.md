@@ -81,10 +81,8 @@ Elements
 Client
 ```
 request = {
-  "login": {
-        "uname": "user123",
-        "pwd": hash("pass123")
-    }
+    "uname": "user123",
+    "pwd": hash("pass123")
 }
 package = jt.prep(request, "login")
 payload = jt.pack(package, config['headerSize'])
@@ -112,10 +110,8 @@ Elements
 Client
 ```
 request = {
-    "register": {
-        "uname": "user123",
-        "pwd": hash("pass123")
-    }
+    "uname": "user123",
+    "pwd": hash("pass123")
 }
 package = jt.prep(request, "register")
 payload = jt.pack(package, config['headerSize'])
