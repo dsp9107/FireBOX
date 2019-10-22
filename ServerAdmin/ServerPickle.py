@@ -16,7 +16,7 @@ def main():
     ip = ni.ifaddresses(config['interface'])[ni.AF_INET][0]['addr']
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('192.168.1.9', config['port']))
+    s.bind((ip, config['port']))
     s.listen(5)
     s.settimeout(config['timeout'])
     logUpdate(msg=f"SERVER STARTED AT {config['port']}")
