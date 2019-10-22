@@ -4,22 +4,23 @@ import json
 import socket
 import jsontransport as jt
 import threeHash as th
+import netifaces as ni
 from datetime import datetime
 
 def main():
-    global config, pubKey, s, failed
+    global config, s, failed, ip
     with open("config.json", "r") as read_file:
         config = json.load(read_file)
 
-    #pubKey = "pK-ub-E-li-Yc"
     failed = 0
+    ip = ni.ifaddresses(config['interface'])[ni.AF_INET][0]['addr']
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((socket.gethostname(), config['port']))
+    s.bind(('192.168.1.9', config['port']))
     s.listen(5)
-    s.settimeout(12)
+    s.settimeout(config['timeout'])
     logUpdate(msg=f"SERVER STARTED AT {config['port']}")
-    print(f"{socket.gethostname()} Is Listening At {config['port']}")
+    print(f"{socket.gethostname()} Is Listening At {ip}, {config['port']}")
 
 def logUpdate(ip='', port='', user='', msgtype='', msglen='', msgcontent='', msg=''):
     time = str(datetime.now())
@@ -43,14 +44,14 @@ while True:
     try :
         # Try Accepting Client's Connection Request
         ClientSocket, Address = s.accept()
-        
+
     except socket.timeout :
         # If Socket Times Out
         logUpdate(msg="SERVER CLOSED DUE TO INACTIVITY\n")
         print("SERVER CLOSED DUE TO INACTIVITY")
-        ClientSocket.close()
+        s.close()
         sys.exit()
-        
+
     else :
         # When Connected
         message = jt.unpack(ClientSocket.recv(1024), config['headerSize'])
@@ -132,3 +133,4 @@ while True:
 
         logUpdate(msg=f"{user['uname']} Disconnected From {Address}")
         print(f"{user['uname']} Has Left")
+
