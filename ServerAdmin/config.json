@@ -1,21 +1,20 @@
 {
-    "headerSize" : 10,
-    "encoding" : "utf-8",
-    "reqtype" :
+    "headerSize": 10,
+    "encoding": "utf-8",
+    "maxClients": 3,
+    "timeout": 30,
+    "port": 9107,
+    "interface": "wlan0",
+    "reqtype":
     {
-        "terminate": 0,
-        "hostname": 0,
-        "pubKey": 0,
-        "fakeTraffic": ""
+        "terminate": 0
     },
-    "sensitive" :
+    "sensitive":
     {
-        "pubkey": "",
-        "credentials": {
+        "credentials":
+        {
             "uname": "",
             "pwd": ""
         }
-    },
-    "maxClients" : 3,
-    "port" : 9107
+    }
 }
