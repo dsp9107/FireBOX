@@ -7,7 +7,7 @@ cd bleh
 ```
 - Make `test.sh` Executable
 ```
-chmod a+rx my-script.sh
+chmod a+rx test.sh
 ```
 - Run `test.sh`
 ```
