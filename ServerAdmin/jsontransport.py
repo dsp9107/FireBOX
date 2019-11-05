@@ -1,5 +1,4 @@
 import json
-import pickle
 
 def prep(msg, typ="message"):
     package = {
@@ -9,14 +8,16 @@ def prep(msg, typ="message"):
     }
     return package
 
-def pack(msg, HEADERSIZE, ENCODING = 'utf-8'):
+def pack(msg, HEADERSIZE = 10, ENCODING = 'utf-8'):
     payload = json.dumps(msg)
-    #payload = bytes(str(len(payload)).ljust(HEADERSIZE), ENCODING) + pickle.dumps(payload)
     payload = bytes(str(len(payload)).ljust(HEADERSIZE) + payload , ENCODING)
     return payload
 
-def unpack(payload, HEADERSIZE, ENCODING = 'utf-8'):
+def unpack(payload, HEADERSIZE = 10, ENCODING = 'utf-8'):
     msg = ""
+    payload = payload.decode()
+    payload = payload.replace("\n","")
+    payload = json.loads(payload)
     for i in payload:
         msg += chr(i)
     msg = msg[HEADERSIZE:]
