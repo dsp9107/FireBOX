@@ -15,11 +15,14 @@ def pack(msg, HEADERSIZE = 10, ENCODING = 'utf-8'):
 
 def unpack(payload, HEADERSIZE = 10, ENCODING = 'utf-8'):
     msg = ""
-    payload = payload.decode()
-    payload = payload.replace("\n","")
-    payload = json.loads(payload)
-    for i in payload:
-        msg += chr(i)
+    if payload[0] == 91 :
+        payload = payload.decode()
+        payload = payload.replace("\n","")
+        payload = json.loads(payload)
+        for i in payload:
+            msg += chr(i)
+    else :
+        msg = payload.decode()
     msg = msg[HEADERSIZE:]
     msg = json.loads(msg)
     return msg
