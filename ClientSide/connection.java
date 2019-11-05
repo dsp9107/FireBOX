@@ -6,10 +6,14 @@ import androidx.core.content.ContextCompat;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,16 +21,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class connection extends AppCompatActivity implements View.OnClickListener {
 
-    public static final int SERVERPORT = 8000;
-    public static final String SERVER_IP = "192.168.1.7";
+    public static final int SERVERPORT = 9107;
+    public static final String SERVER_IP = "192.168.4.1";
 
     private ClientThread clientThread;
     private Thread thread;
@@ -40,6 +46,7 @@ public class connection extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
+
 
         setTitle("Client");
         clientTextColor = ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary);
@@ -86,8 +93,24 @@ public class connection extends AppCompatActivity implements View.OnClickListene
         if (view.getId() == R.id.send_data) {
             String clientMessage = edMessage.getText().toString().trim();
             showMessage(clientMessage, Color.BLUE);
+
+            String payload =String.valueOf(Pack(clientMessage));
+            int HEADERSIZE = 10;
+            byte b[]=null;
+            String Intermediate=padLeft(String.valueOf(payload.length()),HEADERSIZE)+payload;
+            try
+            {
+                b = Intermediate.getBytes("Utf8");
+            }
+            catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            }
+
+
             if (null != clientThread) {
-                clientThread.sendMessage(clientMessage);
+
+                clientThread.sendMessage(b);
             }
         }
     }
@@ -127,16 +150,19 @@ public class connection extends AppCompatActivity implements View.OnClickListene
 
 
 
-    void sendMessage(final String message) {
+    void sendMessage(final byte []message) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    Log.d("chhh",  Arrays.toString(message));
                     if (null != socket) {
                         PrintWriter out = new PrintWriter(new BufferedWriter(
                                 new OutputStreamWriter(socket.getOutputStream())),
                                 true);
-                        out.println(message);
+
+
+                        out.println(Arrays.toString(message));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -156,9 +182,33 @@ public class connection extends AppCompatActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         if (null != clientThread) {
-            clientThread.sendMessage("Disconnect");
+            byte bz[]=null;
+            clientThread.sendMessage(bz);
             clientThread = null;
         }
+    }
+
+
+    public JSONObject Pack(String m) {
+
+
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+            jsonObject.put("messageType", "message");
+            jsonObject.put("messageLength", m.length());
+            jsonObject.put("messageContent", m);
+        }
+        catch (JSONException z) {
+            System.out.print("");
+        }
+        return jsonObject;
+
+
+    }
+
+    public static String padLeft(String s, int n) {
+        return String.format("%" + n + "s", s);
     }
 }
 
