@@ -16,6 +16,9 @@ def pack(msg, HEADERSIZE, ENCODING = 'utf-8'):
     return payload
 
 def unpack(payload, HEADERSIZE, ENCODING = 'utf-8'):
-    msg = payload[HEADERSIZE:]
+    msg = ""
+    for i in payload:
+        msg += chr(i)
+    msg = msg[HEADERSIZE:]
     msg = json.loads(msg)
     return msg
