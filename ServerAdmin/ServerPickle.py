@@ -127,16 +127,26 @@ while True:
 
                 # If Client Sends A Request
                 if message['messageType'] == "request" :
+                    r = ""
+                    for i in message['messageContent'] :
+                        r = i
+
                     # If Client Requests To Disconnect
-                    if message['messageContent']['terminate'] :
+                    if message['messageContent'][r] == 'terminate' :
                         print(f"{user['uname']} : <exiting>")
                         break
 
-                    # If Client Requests Public Key
-                    elif message['messageContent']['pubKey'] :
-                        print(f"{user['uname']} : <requesting publicKey>")
-                        # Send Public Key
-                        ClientSocket.send(jt.pack(jt.prep(pubKey), config['headerSize']))
+                    # If Client Requests Curious Chigfy To Start
+                    elif message['messageContent'][r] == "curiosity" :
+                        if message['messageContent']['curiosity'] :
+                            print(f"{user['uname']} : <requesting Chigfy To Start>")
+                            # Start Curious Chigfy
+                            ack = "Curious Chigfy Is Distorting Your Network Traffic"
+                        else :
+                            print(f"{user['uname']} : <requesting Chigfy To Stop>")
+                            # Stop Curious Chigfy
+                            ack = "Curious Chigfy Is Resting"
+                        ClientSocket.send(jt.pack(jt.prep(ack), config['headerSize']))
 
                 # If Client Sends A Message
                 elif message['messageType'] == "message" :

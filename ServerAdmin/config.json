@@ -2,13 +2,9 @@
     "headerSize": 10,
     "encoding": "utf-8",
     "maxClients": 3,
-    "timeout": 30,
+    "timeout": 40,
     "port": 9107,
     "interface": "wlan0",
-    "reqtype":
-    {
-        "terminate": 0
-    },
     "sensitive":
     {
         "credentials":

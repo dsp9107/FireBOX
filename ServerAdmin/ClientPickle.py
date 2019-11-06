@@ -75,6 +75,7 @@ else :
 
     while True:
         mess = str(input("SERVER : "))
+        ty = "request"
 
         # Request To Disconnect
         if mess == "<exit>" :

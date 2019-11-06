@@ -26,3 +26,6 @@ def unpack(payload, HEADERSIZE = 10):
     msg = msg[HEADERSIZE:]
     msg = json.loads(msg)
     return msg
+
+mess = {"curiosity": 1}
+p = prep(mess, "request")
