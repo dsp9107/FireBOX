@@ -13,7 +13,7 @@ def pack(msg, HEADERSIZE = 10, ENCODING = 'utf-8'):
     payload = bytes(str(len(payload)).ljust(HEADERSIZE) + payload , ENCODING)
     return payload
 
-def unpack(payload, HEADERSIZE = 10, ENCODING = 'utf-8'):
+def unpack(payload, HEADERSIZE = 10):
     msg = ""
     if payload[0] == 91 :
         payload = payload.decode()
