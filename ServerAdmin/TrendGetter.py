@@ -33,7 +33,7 @@ while True :
                         print("Found An Article")
                     else :
                         print("Nothing Found")
-                t = random.randrange(1, 2)
+                t = random.randrange(10, 20)
                 print(f"Taking {t} Seconds To Read\n")
                 time.sleep(t)
     except KeyboardInterrupt :
