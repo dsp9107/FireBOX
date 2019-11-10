@@ -4,7 +4,6 @@ import json
 import socket
 import jsontransport as jt
 import threeHash as th
-import netifaces as ni
 from datetime import datetime
 
 def main():
@@ -13,14 +12,23 @@ def main():
         config = json.load(read_file)
 
     failed = 0
-    ip = ni.ifaddresses(config['interface'])[ni.AF_INET][0]['addr']
+    if sys.platform != 'win32' :
+        import netifaces as ni
+        ip = ni.ifaddresses(config['interface'])[ni.AF_INET][0]['addr']
+    else :
+        ip = socket.gethostname()
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((ip, config['port']))
     s.listen(5)
     s.settimeout(config['timeout'])
     logUpdate(msg=f"SERVER STARTED AT {config['port']}")
-    print(f"{socket.gethostname()} Is Listening At {ip}, {config['port']}")
+    if sys.platform == 'win32' :
+        print(f"IP : {socket.gethostbyname(ip)}")
+        print(f"PORT : {config['port']} | config.json")
+        print(f"TIMEOUT : {config['timeout']} seconds | config.json")
+    else :
+        print(f"{socket.gethostname()} Is Listening At {ip}, {config['port']}")
 
 def logUpdate(ip='', port='', user='', msgtype='', msglen='', msgcontent='', msg=''):
     time = str(datetime.now())
@@ -39,6 +47,7 @@ while True:
     if failed > 2 :
         logUpdate(msg="SERVER CLOSED DUE TO MULTIPLE FAILED LOGIN ATTEMPTS\n")
         print("SERVER CLOSED DUE TO MULTIPLE FAILED LOGIN ATTEMPTS")
+        s.close()
         sys.exit()
 
     try :
@@ -51,6 +60,13 @@ while True:
         print("SERVER CLOSED DUE TO INACTIVITY")
         s.close()
         sys.exit()
+
+    except KeyboardInterrupt :
+        # If Chirag Gets Frustrated
+        logUpdate(msg="USER SHUT DOWN THE SERVER\n")
+        print("USER SHUT DOWN THE SERVER")
+        s.close()
+        break
 
     else :
         # When Connected
@@ -83,6 +99,7 @@ while True:
                         ClientSocket.send(jt.pack(jt.prep(f"Welcome, {user['uname']}"), config['headerSize']))
                         print(f"\nConnection From {Address} Has Been Established")
                     else :
+                        # If Wrong Credentials
                         ClientSocket.send(jt.pack(jt.prep("Invalid User Details"), config['headerSize']))
                         failed += 1
                         print(f"Failed Attempt : {failed}")
@@ -132,12 +149,12 @@ while True:
                         r = i
 
                     # If Client Requests To Disconnect
-                    if message['messageContent'][r] == 'terminate' :
+                    if r == 'terminate' :
                         print(f"{user['uname']} : <exiting>")
                         break
 
                     # If Client Requests Curious Chigfy To Start
-                    elif message['messageContent'][r] == "curiosity" :
+                    elif r == "curiosity" :
                         if message['messageContent']['curiosity'] :
                             print(f"{user['uname']} : <requesting Chigfy To Start>")
                             # Start Curious Chigfy
@@ -154,4 +171,3 @@ while True:
 
             logUpdate(msg=f"{user['uname']} Disconnected From {Address}")
             print(f"{user['uname']} Has Left")
-

@@ -11,7 +11,6 @@ def main():
     with open("config.json", "r") as read_file:
         config = json.load(read_file)
 
-    config['reqtype'] = {i : 0 for i in config['reqtype']}
     host = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,8 +22,13 @@ try :
     s.connect((host, config['port']))
 
 except ConnectionRefusedError :
-    # If Connection Refused
-    print("Server's Offline")
+    # If Server Not Running on LOCALHOST
+    try :
+        # Try Connecting To The Pi
+        s.connect(('192.168.4.1', config['port']))
+    except ConnectionRefusedError :
+        # If Connection Refused
+        print("Server's Offline")
 
 else :
     while True:
