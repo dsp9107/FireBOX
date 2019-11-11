@@ -28,7 +28,7 @@ def main():
         print(f"PORT : {config['port']} | config.json")
         print(f"TIMEOUT : {config['timeout']} seconds | config.json")
     else :
-        print(f"{socket.gethostname()} Is Listening At {ip}, {config['port']}")
+        print(f"FireBOX Is Listening At {ip}, {config['port']}")
 
 def logUpdate(ip='', port='', user='', msgtype='', msglen='', msgcontent='', msg=''):
     time = str(datetime.now())
@@ -63,8 +63,8 @@ while True:
 
     except KeyboardInterrupt :
         # If Chirag Gets Frustrated
-        logUpdate(msg="USER SHUT DOWN THE SERVER\n")
-        print("USER SHUT DOWN THE SERVER")
+        logUpdate(msg="ADMIN SHUT DOWN THE SERVER\n")
+        print("ADMIN SHUT DOWN THE SERVER")
         s.close()
         break
 
@@ -97,7 +97,9 @@ while True:
                     if user['pwd'] == users[user['uname']] :
                         # Acknowledge
                         ClientSocket.send(jt.pack(jt.prep(f"Welcome, {user['uname']}"), config['headerSize']))
-                        print(f"\nConnection From {Address} Has Been Established")
+                        print(f"\n{user['uname']} Has Connected From {Address}")
+                        # Open Firewall For {Address[0]}
+                        print(f"Firewall Opened For {Address[0]}")
                     else :
                         # If Wrong Credentials
                         ClientSocket.send(jt.pack(jt.prep("Invalid User Details"), config['headerSize']))
@@ -150,7 +152,6 @@ while True:
 
                     # If Client Requests To Disconnect
                     if r == 'terminate' :
-                        print(f"{user['uname']} : <exiting>")
                         break
 
                     # If Client Requests Curious Chigfy To Start
@@ -171,3 +172,5 @@ while True:
 
             logUpdate(msg=f"{user['uname']} Disconnected From {Address}")
             print(f"{user['uname']} Has Left")
+            # Close Firewall For {Address[0]}
+            print(f"Firewall Closed For {Address[0]}")

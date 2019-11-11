@@ -22,13 +22,8 @@ try :
     s.connect((host, config['port']))
 
 except ConnectionRefusedError :
-    # If Server Not Running on LOCALHOST
-    try :
-        # Try Connecting To The Pi
-        s.connect(('192.168.4.1', config['port']))
-    except ConnectionRefusedError :
-        # If Connection Refused
-        print("Server's Offline")
+    # If Connection Refused
+    print("Server's Offline")
 
 else :
     while True:
