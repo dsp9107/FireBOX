@@ -1,38 +1,50 @@
-package com.example.wifi;
+package com.example.firebox;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.app.Activity;
-import android.content.Context;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.os.Handler;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
-    Button enableButton,disableButton;
+public class MainActivity extends AppCompatActivity {
+
+    private static int SPLASH_TIME_OUT = 5000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        enableButton=(Button)findViewById(R.id.button1);
-        disableButton=(Button)findViewById(R.id.button2);
+        //This part Will Enable Wifi
+        WifiManager Wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (Wifi.isWifiEnabled()!=true)
+        {
+            Wifi.setWifiEnabled(true);
+        }
 
-        enableButton.setOnClickListener(new OnClickListener(){
-            public void onClick(View v){
-                Intent intent= new Intent(getApplicationContext(),list.class);
-                startActivity(intent);
-                WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                wifi.setWifiEnabled(true);
+        //Connection to FireBOX's Wifi
+        String SSID=getString(R.string.Uname);
+        String WifiPass=getString(R.string.Pass);
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = String.format("\"%s\"",SSID );
+        wifiConfig.preSharedKey = String.format("\"%s\"",WifiPass);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        int netId = wifiManager.addNetwork(wifiConfig);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+        wifiManager.reconnect();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent Login = new Intent(getApplicationContext(),Login.class);
+                startActivity(Login);
+                finish();
             }
-        });
-
-        disableButton.setOnClickListener(new OnClickListener(){
-            public void onClick(View v){
-                WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                wifi.setWifiEnabled(false);
-            }
-        });
+        },SPLASH_TIME_OUT);
     }
 }
