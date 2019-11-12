@@ -99,7 +99,7 @@ while True:
                         ClientSocket.send(jt.pack(jt.prep(f"Welcome, {user['uname']}"), config['headerSize']))
                         print(f"\n{user['uname']} Has Connected From {Address}")
                         # Open Firewall For {Address[0]}
-                        print(f"Firewall Opened For {Address[0]}")
+                        os.system(f"sudo python3 FireWall.py -a -i {Address[0]}")
                     else :
                         # If Wrong Credentials
                         ClientSocket.send(jt.pack(jt.prep("Invalid User Details"), config['headerSize']))
@@ -173,4 +173,4 @@ while True:
             logUpdate(msg=f"{user['uname']} Disconnected From {Address}")
             print(f"{user['uname']} Has Left")
             # Close Firewall For {Address[0]}
-            print(f"Firewall Closed For {Address[0]}")
+            os.system(f"sudo python3 FireWall.py -d -i {Address[0]}")
