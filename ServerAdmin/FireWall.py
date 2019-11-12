@@ -13,10 +13,10 @@ if args.allow == args.deny :
 
 elif args.allow :
     if sys.platform == 'linux' :
-        os.system(f"sudo ufw allow out from any to {args.ip} port 443")
+        os.system(f"sudo ufw route allow in on wlan0 out on eth0 from {args.ip} to any port 443")
     print(f"{ip} Is Allowed To Access Internet Securely")
 
 elif args.deny :
     if sys.platform == 'linux' :
-        os.system(f"sudo ufw deny out from any to {args.ip} port 443")
-    print(f"{ip} Is Not Allowed To Access Internet")
+        os.system(f"sudo ufw route delete allow in on wlan0 out on eth0 from {args.ip} to any port 443")
+    print(f"{ip} Is Denied Access To Internet")
