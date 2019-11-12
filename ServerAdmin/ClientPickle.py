@@ -11,7 +11,7 @@ def main():
     with open("config.json", "r") as read_file:
         config = json.load(read_file)
 
-    host = socket.gethostname()
+    host = '192.168.4.1'#socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 if __name__ == '__main__' :
