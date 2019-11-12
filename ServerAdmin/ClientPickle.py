@@ -11,8 +11,7 @@ def main():
     with open("config.json", "r") as read_file:
         config = json.load(read_file)
 
-    config['reqtype'] = {i : 0 for i in config['reqtype']}
-    host = socket.gethostname()
+    host = '192.168.4.1'#socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 if __name__ == '__main__' :
@@ -75,20 +74,29 @@ else :
 
     while True:
         mess = str(input("SERVER : "))
+        ty = "request"
 
-        # Request To Disconnect
+        # Disconnection Request
         if mess == "<exit>" :
-            mess = config['reqtype']
-            mess['terminate'] = 1
+            mess = {"terminate": 1}
             s.send(jt.pack(jt.prep(mess, "request"), config['headerSize']))
             break
 
-        # Else, Send Message To Server
+        # Other Requests
         else :
-            s.send(jt.pack(jt.prep(mess), config['headerSize']))
+            # Request Curious Chigfy To Start
+            if mess == "<chigfy-start>" :
+                mess = {"curiosity": 1}
 
-        # Reset Request Flags
-        config['reqtype'] = {i : 0 for i in config['reqtype']}
+            # Request Curious Chigfy To Stop
+            elif mess == "<chigfy-stop>" :
+                mess = {"curiosity": 0}
+
+            # If Just A Message
+            else :
+                ty = "message"
+
+            s.send(jt.pack(jt.prep(mess, ty), config['headerSize']))
             
     print(f"Connection With {host} Has Been Terminated")
 
