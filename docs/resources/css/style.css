@@ -1,0 +1,29 @@
+body {
+    background: rgb(241, 39, 17);
+    background: linear-gradient(
+        90deg,
+        rgba(241, 39, 17, 1) 0%,
+        rgba(245, 175, 25, 1) 100%
+    );
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -o-user-select: none;
+}
+
+div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -150px;
+    /* width: 100px; */
+    /* height: 100px; */
+}
+
+text {
+    font-family: "Oxygen Mono", monospace;
+    font-size: 40px;
+    color: whitesmoke;
+}
